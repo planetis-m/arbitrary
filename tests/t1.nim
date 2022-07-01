@@ -229,20 +229,16 @@ proc main =
 
   block ReadData:
     var x = toUnstructured(data)
-    var y = newSeq[uint8](1)
-    readData(x, addr y[0], y.len)
+    var y = x.readBytes(1)
     assert y == @[0x8A'u8]
-    y = newSeq[uint8](10)
-    readData(x, addr y[0], y.len)
+    y = x.readBytes(10)
     assert y == @[0x19'u8, 0x0D, 0x44, 0x37, 0x0D, 0x38, 0x5E, 0x9B, 0xAA, 0xF3]
-    y = newSeq[uint8](24)
-    readData(x, addr y[0], y.len)
+    y = x.readBytes(24)
     assert y == @[0xDA'u8, 0xAA, 0x88, 0xF2, 0x9B, 0x6C, 0xBA, 0xBE, 0xB1, 0xF2,
                   0xCF, 0x13, 0xB8, 0xAC, 0x1A, 0x7F, 0x1C, 0xC9, 0x90, 0xD0,
                   0xD9, 0x5C, 0x42, 0xB3]
-    #y = newSeq[uint8](31337)
-    #readData(x, addr y[0], y.len)
-    #y = data[1 + 10 + 24..^1]
+    y = x.readBytes(31337)
+    assert y == data[1 + 10 + 24..^1]
 
   block ReadFloat:
     var x = toUnstructured(data)
@@ -254,11 +250,5 @@ proc main =
     let str = x.readStr(31337)
     assert(str.len == 992)
     assert(x.readFloat32 == 0)
-
-  block Arbitrary:
-    var x = toUnstructured(data)
-    echo x.read[:int16]
-    echo x.read[:float64]
-    #echo restLen[int64](x)
 
 main()

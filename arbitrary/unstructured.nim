@@ -63,7 +63,7 @@ proc readFloat32*(x: var Unstructured): float32 =
   result = float32(readInt[uint32](x))
 
 proc readBool*(x: var Unstructured): bool =
-  result = bool(1 and readInt[uint8](x))
+  result = (1 and readInt[uint8](x)) == 1
 
 proc readStr*(x: var Unstructured; length: int): string =
   let n = min(length, x.remainingBytes)
