@@ -71,6 +71,12 @@ proc readStr*(x: var Unstructured; length: int): string =
   if n > 0: copyMem(cstring(result), x.data, n)
   advance(x, n)
 
+proc readBytes*(x: var Unstructured; length: int): seq[byte] =
+  let n = min(length, x.remainingBytes)
+  result = newSeq[byte](n)
+  if n > 0: copyMem(addr result[0], x.data, n)
+  advance(x, n)
+
 proc byteSize*(x: var Unstructured): int =
   if x.remainingBytes == 0:
     result = 0

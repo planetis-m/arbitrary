@@ -13,7 +13,7 @@ proc ratio*[T](x: var Unstructured; numerator, denominator: T): bool =
   result = x <= numerator
 
 template implForInts(ty, unsigned) =
-  proc arbitrary*(x: var Unstructured; result: var ty) =
+  proc fromArbitrary*(x: var Unstructured; result: var ty) =
     var res: unsigned = 0
     for i in 0..<sizeof(ty):
       res = res or unsigned(x.data[i]) shl (i * 8)
