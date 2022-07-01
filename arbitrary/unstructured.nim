@@ -77,6 +77,21 @@ proc readBytes*(x: var Unstructured; length: int): seq[byte] =
   if n > 0: copyMem(addr result[0], x.data, n)
   advance(x, n)
 
+proc readRandStr*(x: var Unstructured; maxLength: int): string =
+  # Reserve the anticipated capaticity to prevent several reallocations.
+  result = newStringOfCap(min(maxLength, x.remainingBytes))
+  var i = 0
+  while i < maxLength and x.remainingBytes != 0:
+    var next = cast[char](x.data[0])
+    advance(x, 1)
+    if next == '\\' and x.remainingBytes != 0:
+      next = cast[char](x.data[0])
+      advance(x, 1)
+      if next != '\\':
+        break
+    result.add next
+    inc i
+
 proc byteSize*(x: var Unstructured): int =
   if x.remainingBytes == 0:
     result = 0

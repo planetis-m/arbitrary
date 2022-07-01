@@ -22,19 +22,18 @@ template implForInts(ty, unsigned) =
 
 #implForInts(int16, uint16)
 
-proc read*[T: SomeNumber](x: var Unstructured): T =
-  result = 0
-  x.readData(addr result, sizeof(result))
+#proc read*[T: SomeNumber](x: var Unstructured): T =
+  #result = 0
+  #x.readData(addr result, sizeof(result))
 
 #proc readBool1*(x: var Unstructured): bool =
   #(x.read[:uint8] and 1) == 1
 
-template sizeHint*(t: typedesc[int64]): (int, int) =
-  (sizeof(t), sizeof(t))
+#template sizeHint*(t: typedesc[int64]): (int, int) =
+  #(sizeof(t), sizeof(t))
 
-proc restLen*[T](x: var Unstructured): int =
-  let byteSize = x.byteSize
-  let (lower, upper) = sizeHint(T)
-  let elemSize = max(1, if upper > -1: upper else: lower * 2)
-  result = byteSize div elemSize
-
+#proc restLen*[T](x: var Unstructured): int =
+  #let byteSize = x.byteSize
+  #let (lower, upper) = sizeHint(T)
+  #let elemSize = max(1, if upper > -1: upper else: lower * 2)
+  #result = byteSize div elemSize
