@@ -22,12 +22,12 @@ template implForInts(ty, unsigned) =
 
 #implForInts(int16, uint16)
 
-#proc read*[T: SomeNumber](x: var Unstructured): T =
-  #result = 0
-  #x.readData(addr result, sizeof(result))
+proc read*[T](x: var Unstructured): T =
+  result = T(0)
+  x.readData(addr result, sizeof(result))
 
-#proc readBool1*(x: var Unstructured): bool =
-  #(x.read[:uint8] and 1) == 1
+proc readBool1*(x: var Unstructured): bool =
+  (x.read[:uint8] and 1) == 1
 
 #template sizeHint*(t: typedesc[int64]): (int, int) =
   #(sizeof(t), sizeof(t))

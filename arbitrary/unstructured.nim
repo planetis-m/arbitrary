@@ -82,10 +82,10 @@ proc readRandStr*(x: var Unstructured; maxLength: int): string =
   result = newStringOfCap(min(maxLength, x.remainingBytes))
   var i = 0
   while i < maxLength and x.remainingBytes != 0:
-    var next = cast[char](x.data[0])
+    var next = char(x.data[0])
     advance(x, 1)
     if next == '\\' and x.remainingBytes != 0:
-      next = cast[char](x.data[0])
+      next = char(x.data[0])
       advance(x, 1)
       if next != '\\':
         break
@@ -99,15 +99,15 @@ proc byteSize*(x: var Unstructured): int =
     advance(x, 1)
     result = 0
   else:
-    result = if x.remainingBytes.int64 <= high(int8).int64 + 1:
+    if x.remainingBytes.int64 <= high(int8).int64 + 1:
       let maxSize = x.remainingBytes - 1
-      int x.intInRange(0'i8, maxSize.int8)
+      result = x.intInRange(0'i8, maxSize.int8)
     elif x.remainingBytes.int64 <= high(int16).int64 + 2:
       let maxSize = x.remainingBytes - 2
-      int x.intInRange(0'i16, maxSize.int16)
+      result = x.intInRange(0'i16, maxSize.int16)
     elif x.remainingBytes.int64 <= high(int32).int64 + 4:
       let maxSize = x.remainingBytes - 4
-      int x.intInRange(0'i32, maxSize.int32)
+      result = x.intInRange(0'i32, maxSize.int32)
     else:
       let maxSize = x.remainingBytes - 8
-      int x.intInRange(0'i64, maxSize.int64)
+      result = int x.intInRange(0'i64, maxSize.int64)
