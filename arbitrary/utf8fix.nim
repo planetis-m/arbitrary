@@ -74,7 +74,7 @@ when isMainModule:
   block:
     var str = newString(rand(0..255))
     for run in 1..10000:
-      for i in 0..<str.len: str[i] = rand(low(char)..high(char))
+      for i in 0..<str.len: str[i] = rand(char)
       var fixed = str
       fixUtf8(fixed, randState)
       if str.isValid: assert fixed == str

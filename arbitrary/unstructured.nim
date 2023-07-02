@@ -1,3 +1,5 @@
+import std/unicode
+
 type
   Unstructured* = object
     data: ptr UncheckedArray[byte]
@@ -45,8 +47,8 @@ proc intInRange*[T: SomeInteger](x: var Unstructured; min, max: T): T =
 
 proc readData*(x: var Unstructured; buffer: pointer; bufLen: int) =
   let n = min(bufLen, x.remainingBytes)
-  if n > 0: copyMem(buffer, x.data, n)
-  #if bufLen > n: zeroMem(buffer +! n, bufLen - n)
+  copyMem(buffer, x.data, n)
+  zeroMem(buffer +! n, bufLen - n)
   advance(x, n)
 
 proc readEnum*[T: enum](x: var Unstructured): T =
@@ -65,16 +67,23 @@ proc readFloat32*(x: var Unstructured): float32 =
 proc readBool*(x: var Unstructured): bool =
   result = (1 and readInt[uint8](x)) == 1
 
-proc readStr*(x: var Unstructured; length: int): string =
-  let n = min(length, x.remainingBytes)
-  result = newString(n)
-  if n > 0: copyMem(cstring(result), x.data, n)
-  advance(x, n)
-
 proc readBytes*(x: var Unstructured; length: int): seq[byte] =
   let n = min(length, x.remainingBytes)
   result = newSeq[byte](n)
-  if n > 0: copyMem(addr result[0], x.data, n)
+  copyMem(addr result[0], x.data, n)
+  advance(x, n)
+
+proc readStr*(x: var Unstructured; length: int): string =
+  let n = min(length, x.remainingBytes)
+  result = newString(n)
+  copyMem(cstring(result), x.data, n)
+  advance(x, n)
+
+proc readUtf8Str*(x: var Unstructured; maxLength: int): string =
+  let n = min(maxLength, x.remainingBytes)
+  result = newString(n)
+  copyMem(cstring(result), x.data, n)
+  if (let i = validateUtf8(result); i != -1): result.setLen(i)
   advance(x, n)
 
 proc readRandStr*(x: var Unstructured; maxLength: int): string =
